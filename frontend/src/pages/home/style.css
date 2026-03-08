@@ -1,0 +1,46 @@
+body{
+    background-color: bisque;
+}
+
+.cabecalho{
+    text-align: center;
+}
+
+.operacao{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 50px;
+}
+
+.formulario{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 300px;
+}
+
+.registro{
+    width: 80vw;
+    min-height: 200px;
+}
+
+.categorias{
+   
+}
+
+table{
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td{
+    border: 1px solid #000000;
+    padding: 8px;
+    text-align: center;
+}
+
+th{
+    background-color: #f2f2f2;
+}
