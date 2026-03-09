@@ -1,25 +1,24 @@
 import './style.css'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 
 
 function Home() {
 
-  const [pagamentos, setPagamentos] = useState([
-    {
-      titulo: "Almoço",
-      valor: 25,
-      data: "2026-03-07",
-      categoria: "Comida"
-    },
-    {
-      titulo: "Uber",
-      valor: 18,
-      data: "2026-03-06",
-      categoria: "Transporte"
-    }
-    
-  ])
+  const [pagamentos, setPagamentos] = useState([])
+
+  useEffect(() => {
+  fetch("http://localhost:8080/payments")
+    .then(response => response.json())
+    .then(data => setPagamentos(data))
+  }, [])
+
+  const [titulo, setTitulo] = useState("")
+  const [valor, setValor] = useState("")
+  const [data, setData] = useState("")
+  const [categoria, setCategoria] = useState("")
+
+
   return (
     <>
       <div className="cabecalho">
@@ -29,18 +28,63 @@ function Home() {
 
       <div className='operacao'>
         <div className='formulario'>
-          <input type="text" placeholder='Titulo' />
-          <input type="number" placeholder='Valor' />
-          <input type="date" placeholder='Data' />
+
+          <input
+            type="text"
+            placeholder="Titulo"
+            value={titulo}
+            onChange={(e) => setTitulo(e.target.value)}
+          />
+
+          <input
+            type="number"
+            placeholder="Valor"
+            value={valor}
+            onChange={(e) => setValor(e.target.value)}
+          />
+
+          <input
+            type="date"
+            value={data}
+            onChange={(e) => setData(e.target.value)}
+          />
+
           <div className='categorias'>  
-            <input type="radio" name="categoria" value="Comida" /> Comida
-            <input type="radio" name="categoria" value="Transporte" /> Transporte
-            <input type="radio" name="categoria" value="Lazer" /> Lazer
-            <input type="radio" name="categoria" value="Saúde" /> Saúde
-            <input type="radio" name="categoria" value="Outros" /> Outros
+
+            <input
+            type="radio"
+            name="categoria"
+            value="Comida"
+            onChange={(e) => setCategoria(e.target.value)}
+            /> Comida
+            
+            <input
+            type="radio"
+            name="categoria"
+            value="Saúde"
+            onChange={(e) => setCategoria(e.target.value)}
+            /> Saúde
+
+            <input
+            type="radio"
+            name="categoria"
+            value="Transporte"
+            onChange={(e) => setCategoria(e.target.value)}
+            /> Transporte
+
+            <input
+            type="radio"
+            name="categoria"
+            value="Outros"
+            onChange={(e) => setCategoria(e.target.value)}
+            /> Outros
+
           </div>
           
-          <button>Registrar</button>
+          <button onClick={registrarPagamento}>
+            Registrar
+          </button>
+          
         </div>
         <div className='registro'>
           <table>
@@ -70,6 +114,28 @@ function Home() {
              
     </>
   )
+}
+
+function registrarPagamento() {
+
+  const pagamento = {
+    titulo,
+    valor: parseFloat(valor),
+    data,
+    categoria
+  }
+
+  fetch("http://localhost:8080/payments", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(pagamento)
+  })
+  .then(response => response.json())
+  .then(novoPagamento => {
+    setPagamentos([...pagamentos, novoPagamento])
+  })
 }
 
 export default Home
