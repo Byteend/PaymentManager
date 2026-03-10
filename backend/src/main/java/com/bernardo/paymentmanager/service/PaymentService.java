@@ -1,7 +1,8 @@
 package com.bernardo.paymentmanager.service;
 
-import org.springframework.stereotype.Service;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
 
 import com.bernardo.paymentmanager.model.Payment;
 import com.bernardo.paymentmanager.repository.PaymentRepository;
@@ -26,5 +27,9 @@ public class PaymentService {
 
     public void deletePayment(Long id) {
         repository.deleteById(id);
+    }
+
+    public Double calcularTotalDosPagamentos() {
+        return repository.calcularTotalDosPagamentos();
     }
 }
