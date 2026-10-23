@@ -45,10 +45,33 @@ function Home() {
       })
   }
 
+  async function deletarPagamento(id) {
+    try {
+      const response = await fetch(`http://localhost:8080/payments/${id}`, {
+        method: "DELETE"
+      })
+
+      if (!response.ok) {
+        throw new Error(`Falha ao excluir pagamento: ${response.status}`)
+      }
+
+      setPagamentos(current => current.filter(p => p.id !== id))
+      totalPagamentos()
+    } catch (error) {
+      console.error("Erro ao excluir pagamento:", error)
+      window.alert("Não foi possível excluir o pagamento. Tente novamente.")
+    }
+  }
+
   function totalPagamentos() {
     fetch("http://localhost:8080/payments/total")
       .then(response => response.json())
       .then(valorTotal => setTotal(valorTotal))
+  }
+
+  function formatarData(data) {
+    const [ano, mes, dia] = data.split("-")
+    return `${dia}/${mes}/${ano}`
   }
 
   return (
@@ -61,6 +84,7 @@ function Home() {
 
       <div className='operacao'>
         <div className='formulario'>
+          <h2>Novo pagamento</h2>
 
           <input
             type="text"
@@ -84,33 +108,18 @@ function Home() {
 
           <div className='categorias'>
 
-            <input
-              type="radio"
-              name="categoria"
-              value="Comida"
-              onChange={(e) => setCategoria(e.target.value)}
-            /> Comida
-
-            <input
-              type="radio"
-              name="categoria"
-              value="Saúde"
-              onChange={(e) => setCategoria(e.target.value)}
-            /> Saúde
-
-            <input
-              type="radio"
-              name="categoria"
-              value="Transporte"
-              onChange={(e) => setCategoria(e.target.value)}
-            /> Transporte
-
-            <input
-              type="radio"
-              name="categoria"
-              value="Outros"
-              onChange={(e) => setCategoria(e.target.value)}
-            /> Outros
+            {["Comida", "Saúde", "Transporte", "Outros"].map(opcao => (
+              <label className="categoria-opcao" key={opcao}>
+                <input
+                  type="radio"
+                  name="categoria"
+                  value={opcao}
+                  checked={categoria === opcao}
+                  onChange={(e) => setCategoria(e.target.value)}
+                />
+                {opcao}
+              </label>
+            ))}
 
           </div>
 
@@ -120,6 +129,7 @@ function Home() {
 
         </div>
         <div className='registro'>
+          <h2>Pagamentos registrados</h2>
           <table>
             <thead>
               <tr>
@@ -127,16 +137,20 @@ function Home() {
                 <th>Valor</th>
                 <th>Data</th>
                 <th>Categoria</th>
+                <th>Ações</th>
               </tr>
             </thead>
 
             <tbody>
-              {pagamentos.map((p, index) => (
-                <tr key={index}>
+              {pagamentos.map((p) => (
+                <tr key={p.id}>
                   <td>{p.titulo}</td>
                   <td>R${p.valor}</td>
-                  <td>{p.data}</td>
+                  <td>{formatarData(p.data)}</td>
                   <td>{p.categoria}</td>
+                  <td>
+                    <button onClick={() => deletarPagamento(p.id)}>Deletar</button>
+                  </td>
                 </tr>
               ))}
             </tbody>
