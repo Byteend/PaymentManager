@@ -213,13 +213,184 @@ tbody tr:hover {
 .registro button {
   min-height: 34px;
   padding: 0 12px;
-  background: #fff1f0;
-  color: #b54743;
   font-size: 0.85rem;
 }
 
-.registro button:hover {
+.acoes-pagamento {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.registro .botao-editar {
+  background: #edf4ff;
+  color: #285eaa;
+}
+
+.registro .botao-editar:hover {
+  background: #dceaff;
+}
+
+.registro .botao-deletar {
+  background: #fff1f0;
+  color: #b54743;
+}
+
+.registro .botao-deletar:hover {
   background: #ffe1df;
+}
+
+.modal-edicao {
+  position: fixed;
+  z-index: 10;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  background: rgb(14 28 49 / 42%);
+}
+
+.painel-edicao {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: min(100%, 440px);
+  height: 100%;
+  box-sizing: border-box;
+  padding: 32px;
+  overflow-y: auto;
+  background: #fff;
+  box-shadow: -12px 0 40px rgb(16 35 61 / 16%);
+  animation: entrada-painel 180ms ease-out;
+}
+
+.cabecalho-edicao {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sobrelinha-edicao {
+  margin: 0 0 8px;
+  color: #718098;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.cabecalho-edicao h2 {
+  margin: 0;
+  color: #1b3152;
+  font-size: 1.35rem;
+}
+
+.fechar-edicao {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 9px;
+  background: #f2f5f9;
+  color: #53657e;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.fechar-edicao:hover {
+  background: #e7edf5;
+}
+
+.formulario-edicao {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formulario-edicao > label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #435671;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.formulario-edicao > label input {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #d8e0eb;
+  border-radius: 9px;
+  outline: none;
+  background: #fff;
+  color: #172b4d;
+}
+
+.formulario-edicao > label input:focus {
+  border-color: #4779c7;
+  box-shadow: 0 0 0 3px rgb(71 121 199 / 14%);
+}
+
+.formulario-edicao fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.formulario-edicao legend {
+  margin-bottom: 8px;
+  color: #435671;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.acoes-edicao {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.acoes-edicao button {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.botao-cancelar {
+  background: #f2f5f9;
+  color: #53657e;
+}
+
+.botao-cancelar:hover {
+  background: #e7edf5;
+}
+
+.botao-salvar-edicao {
+  background: #285eaa;
+  color: #fff;
+}
+
+.botao-salvar-edicao:hover {
+  background: #204e91;
+}
+
+@keyframes entrada-painel {
+  from {
+    transform: translateX(24px);
+    opacity: 0.7;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 760px) {
@@ -237,6 +408,10 @@ tbody tr:hover {
   .formulario,
   .registro {
     padding: 20px;
+  }
+
+  .painel-edicao {
+    padding: 24px 20px;
   }
 }
 

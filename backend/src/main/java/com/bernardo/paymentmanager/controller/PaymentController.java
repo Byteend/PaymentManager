@@ -55,7 +55,7 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}")
-    public void updatePayment(@PathVariable Long id, @RequestBody Payment payment){
-        paymentService.updatePayment(id, payment);
+    public Payment updatePayment(@PathVariable Long id, @RequestBody Payment payment){
+        return paymentService.updatePayment(id, payment);
     }
 }
