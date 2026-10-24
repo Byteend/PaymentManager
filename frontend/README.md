@@ -1,16 +1,43 @@
-# React + Vite
+# Payment Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Deploy com Docker Compose
 
-Currently, two official plugins are available:
+O backend e o frontend têm arquivos Compose independentes. Configure o banco
+remoto no arquivo `backend/.env` e não compartilhe esse arquivo:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```powershell
+cd backend
+docker compose up --build -d
+```
 
-## React Compiler
+O backend fica disponível na porta 8080. Para publicar o frontend em outro
+servidor, configure a URL pública da API em `frontend/.env`:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```powershell
+cd ..\frontend
+Copy-Item .env.example .env
+```
 
-## Expanding the ESLint configuration
+Edite `VITE_API_URL` com a URL do backend e inicie o frontend:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```powershell
+docker compose up --build -d
+```
+
+O frontend fica disponível na porta 3000. Como a URL da API é incorporada
+durante o build do Vite, reconstrua a imagem após alterá-la.
+
+## Desenvolvimento local
+
+Inicie o backend com `backend\mvnw.cmd spring-boot:run` e, em outro terminal, inicie o frontend:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+O Vite encaminha as chamadas `/payments` para `http://localhost:8080`. Para
+usar o Supabase localmente, configure as variáveis `SPRING_DATASOURCE_URL`,
+`SPRING_DATASOURCE_USERNAME` e `SPRING_DATASOURCE_PASSWORD` no ambiente do
+backend.

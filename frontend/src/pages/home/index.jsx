@@ -1,7 +1,7 @@
 import './style.css'
 import { useState, useEffect } from "react"
 
-
+const API_BASE_URL = import.meta.env.VITE_API_URL || ""
 
 function Home() {
 
@@ -9,7 +9,7 @@ function Home() {
   const [total, setTotal] = useState(0)
 
   useEffect(() => {
-    fetch("http://localhost:8080/payments")
+    fetch(`${API_BASE_URL}/payments`)
       .then(response => response.json())
       .then(data => setPagamentos(data))
 
@@ -30,7 +30,7 @@ function Home() {
       categoria
     }
 
-    fetch("http://localhost:8080/payments", {
+    fetch(`${API_BASE_URL}/payments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -47,7 +47,7 @@ function Home() {
 
   async function deletarPagamento(id) {
     try {
-      const response = await fetch(`http://localhost:8080/payments/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/payments/${id}`, {
         method: "DELETE"
       })
 
@@ -64,7 +64,7 @@ function Home() {
   }
 
   function totalPagamentos() {
-    fetch("http://localhost:8080/payments/total")
+    fetch(`${API_BASE_URL}/payments/total`)
       .then(response => response.json())
       .then(valorTotal => setTotal(valorTotal))
   }
