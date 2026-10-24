@@ -47,4 +47,9 @@ public class PaymentController {
     public void deletePayment(@PathVariable Long id) {
         paymentService.deletePayment(id);
     }
+
+    @GetMapping("/conta/{id}")
+    public Payment getPayment(@PathVariable Long id){
+        return paymentService.getPayment(id);
+    }
 }

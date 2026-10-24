@@ -32,4 +32,8 @@ public class PaymentService {
     public Double calcularTotalDosPagamentos() {
         return repository.calcularTotalDosPagamentos();
     }
+
+    public Payment getPayment(Long id){
+        return repository.findById(id).orElse(null);
+    }
 }
