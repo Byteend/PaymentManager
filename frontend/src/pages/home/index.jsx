@@ -7,6 +7,7 @@ function Home() {
 
   const [pagamentos, setPagamentos] = useState([])
   const [total, setTotal] = useState(0)
+  const [erroRegistro, setErroRegistro] = useState("")
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/payments`)
@@ -26,7 +27,9 @@ function Home() {
   const [dataEdicao, setDataEdicao] = useState("")
   const [categoriaEdicao, setCategoriaEdicao] = useState("")
 
-  function registrarPagamento() {
+  async function registrarPagamento(event) {
+    event.preventDefault()
+    setErroRegistro("")
 
     const pagamento = {
       titulo,
@@ -35,19 +38,30 @@ function Home() {
       categoria
     }
 
-    fetch(`${API_BASE_URL}/payments`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(pagamento)
-    })
-      .then(response => response.json())
-      .then(novoPagamento => {
-        setPagamentos([...pagamentos, novoPagamento]);
-        
-        totalPagamentos();
+    try {
+      const response = await fetch(`${API_BASE_URL}/payments`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(pagamento)
       })
+
+      if (!response.ok) {
+        throw new Error(`Falha ao registrar pagamento: ${response.status}`)
+      }
+
+      const novoPagamento = await response.json()
+      setPagamentos(current => [...current, novoPagamento])
+      setTitulo("")
+      setValor("")
+      setData("")
+      setCategoria("")
+      totalPagamentos()
+    } catch (error) {
+      console.error("Erro ao registrar pagamento:", error)
+      setErroRegistro("Não foi possível registrar o pagamento. Tente novamente.")
+    }
   }
 
   async function deletarPagamento(id) {
@@ -114,12 +128,20 @@ function Home() {
   function totalPagamentos() {
     fetch(`${API_BASE_URL}/payments/total`)
       .then(response => response.json())
-      .then(valorTotal => setTotal(valorTotal))
+      .then(valorTotal => setTotal(Number(valorTotal ?? 0)))
   }
 
   function formatarData(data) {
-    const [ano, mes, dia] = data.split("-")
-    return `${dia}/${mes}/${ano}`
+    if (typeof data !== "string") {
+      return "—"
+    }
+
+    const partes = data.match(/^(\d{4})-(\d{2})-(\d{2})$/)
+    if (!partes) {
+      return "—"
+    }
+
+    return `${partes[3]}/${partes[2]}/${partes[1]}`
   }
 
   return (
@@ -127,11 +149,11 @@ function Home() {
       <div className="cabecalho">
         <h1>Payment Manager</h1>
         <p>Bem-vindo ao sistema de gerenciamento de pagamentos.</p>
-        <p>Total de pagamentos: R${total.toFixed(2)}</p>
+        <p>Total de pagamentos: R${Number(total ?? 0).toFixed(2)}</p>
       </div>
 
       <div className='operacao'>
-        <div className='formulario'>
+        <form className='formulario' onSubmit={registrarPagamento}>
           <h2>Novo pagamento</h2>
 
           <input
@@ -139,6 +161,7 @@ function Home() {
             placeholder="Titulo"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
+            required
           />
 
           <input
@@ -146,12 +169,16 @@ function Home() {
             placeholder="Valor"
             value={valor}
             onChange={(e) => setValor(e.target.value)}
+            min="0"
+            step="0.01"
+            required
           />
 
           <input
             type="date"
             value={data}
             onChange={(e) => setData(e.target.value)}
+            required
           />
 
           <div className='categorias'>
@@ -164,6 +191,7 @@ function Home() {
                   value={opcao}
                   checked={categoria === opcao}
                   onChange={(e) => setCategoria(e.target.value)}
+                  required
                 />
                 {opcao}
               </label>
@@ -171,11 +199,12 @@ function Home() {
 
           </div>
 
-          <button onClick={registrarPagamento}>
+          <button type="submit">
             Registrar
           </button>
 
-        </div>
+          {erroRegistro && <p role="alert">{erroRegistro}</p>}
+        </form>
         <div className='registro'>
           <h2>Pagamentos registrados</h2>
           <table>
